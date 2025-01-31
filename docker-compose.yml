@@ -1,0 +1,58 @@
+# Badly named, you can set stuff here for for both the build and the running ComfyUI
+x-common-build: &common-build
+    build:
+        context: .
+        dockerfile: Dockerfile
+        args:
+            UID: ${UID}
+            GID: ${GID}
+    image: python-cuda:latest # Tag the image
+    environment:
+        PIP_CACHE_DIR: /app/pip-cache
+        NUMEXPR_MAX_THREADS: 24
+        # Deprecated
+        #TRANSFORMERS_CACHE: /app/transformers-cache
+        HF_HOME: /app/hf-home
+    working_dir: /app
+
+services:
+    comfyui:
+        <<: *common-build
+        ports:
+            - "127.0.0.1:8188:8188"
+        volumes:
+            - ./ComfyUI:/app/ComfyUI
+            - ./ComfyUI_frontend/dist:/app/ComfyUI/web
+            - ./models:/app/ComfyUI/models
+            - ./venv:/app/venv
+            - ${HOME}/.cache/pip:/app/pip-cache
+            - ${HOME}/.cache/huggingface:/app/hf-home
+        working_dir: /app/ComfyUI
+        user: "${UID}:${GID}"
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - capabilities: [gpu]
+        ipc: host # Use host IPC namespace
+        ulimits:
+            memlock: -1 # Disable memory lock limit
+            stack: 6710886 # Set stack size limit
+        command: /app/venv/bin/python main.py --listen 0.0.0.0 --preview-method taesd --use-pytorch-cross-attention --disable-xformers
+
+    create-venv:
+        profiles:
+            - init
+        <<: *common-build
+        volumes:
+            - ./ComfyUI:/app/ComfyUI
+            - ./venv:/app/venv
+            - ${HOME}/.cache/pip:/app/pip-cache
+            - ${HOME}/.cache/huggingface
+        user: "${UID}:${GID}"
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - capabilities: [gpu]
+        command: sh -c "python3 -m venv venv --system-site-packages && venv/bin/pip install -r ComfyUI/requirements.txt"
