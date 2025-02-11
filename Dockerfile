@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 # Set working directory
 WORKDIR /app
 
-
-RUN echo ${GID} xx ${UID} && addgroup --gid ${GID} user && \
+ARG UID
+ARG GID
+RUN addgroup --gid ${GID} user && \
    adduser --uid ${UID} --gid ${GID} --shell /bin/sh user
