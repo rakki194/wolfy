@@ -74,6 +74,15 @@ This command:
 
 ComfyUI will be accessible at [http://localhost:8188](http://localhost:8188).
 
+
+### Installing Custom Node Dependencies
+
+Many custom nodes require additional Python packages. The logs show which dependencies are missing when you start ComfyUI. To install them:
+
+```bash
+UID=$(id -u) GID=$(id -g) docker-compose --profile init run --rm create-venv /bin/dash -c ". /app/venv/bin/activate && pip install opencv-python diffusers insightface trimesh statsmodels numba gguf bitsandbytes simpleeval timm transparent_background"
+```
+
 ### Creating a Named Container for Easy Restart
 
 To create a named container that can be easily restarted, you can use:
@@ -210,7 +219,6 @@ You can modify these options in the `docker-compose.yml` file.
 
 - Ensure NVIDIA drivers and NVIDIA Container Toolkit are installed
 - Check Docker logs with `docker logs comfy-comfyui-1`
-
 ### Environment Issues
 
 - If changes to requirements are made, rebuild the environment with:
@@ -226,3 +234,4 @@ You can modify these options in the `docker-compose.yml` file.
 
 - Ensure the UID and GID environment variables are set correctly
 - Check permissions of mounted directories
+
