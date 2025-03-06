@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python3-pip \
     python3-wheel \
     python3-venv \
+    python3-yaml \
     build-essential \
     pkg-config \
     ffmpeg \
