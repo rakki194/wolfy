@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     python3-yaml \
     build-essential \
     pkg-config \
+    cmake \
     ffmpeg \
     libgl1 \
     && rm -rf /var/lib/apt/lists/*

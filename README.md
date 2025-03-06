@@ -80,7 +80,15 @@ ComfyUI will be accessible at [http://localhost:8188](http://localhost:8188).
 Many custom nodes require additional Python packages. The logs show which dependencies are missing when you start ComfyUI. To install them:
 
 ```bash
-UID=$(id -u) GID=$(id -g) docker-compose --profile init run --rm create-venv /bin/dash -c ". /app/venv/bin/activate && pip install opencv-python diffusers insightface trimesh statsmodels numba gguf bitsandbytes simpleeval timm transparent_background"
+UID=$(id -u) GID=$(id -g) docker-compose --profile init run --rm create-venv /bin/dash -c ". /app/venv/bin/activate && pip install opencv-python diffusers insightface trimesh statsmodels numba gguf bitsandbytes simpleeval timm transparent_background piexif resampy webcolors jaxtyping onnxruntime-gpu pymunk numexpr dlib sd_mecha imageio_ffmpeg pillow_jxl_plugin librosa segment_anything /app/ComfyUI/custom_nodes/stable-point-aware-3d/uv_unwrapper"
+
+```
+
+Or start an interactive shell and manually install the dependencies:
+```bash
+UID=$(id -u) GID=$(id -g) docker-compose --profile init run --rm create-venv /bin/bash
+. /app/venv/bin/activate
+pip install [...]
 ```
 
 ### Creating a Named Container for Easy Restart
