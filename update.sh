@@ -64,8 +64,9 @@ fi
 
 
 echo "Building Docker images..."
-export UID=$(id -u) 
-export GID=$(id -g)
+#export UID=$(id -u) 
+#export GID=$(id -g)
+
 docker compose build
 
 echo "Creating/Updating Python environment..."
