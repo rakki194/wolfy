@@ -37,13 +37,17 @@ services:
         ipc: host # Use host IPC namespace
         ulimits:
             memlock: -1 # Disable memory lock limit
-            stack: 6710886 # Set stack size limit
+            stack: 67108864 # Set stack size limit
         command: /bin/dash -c ". /app/venv/bin/activate && python main.py --listen 0.0.0.0 --preview-method taesd --use-pytorch-cross-attention --disable-xformers"
 
     create-venv:
         profiles:
             - init
         <<: *common-build
+        ipc: host
+        ulimits:
+          memlock: -1
+          stack: 67108864
         volumes:
             - ./ComfyUI:/app/ComfyUI
             - ./venv:/app/venv
