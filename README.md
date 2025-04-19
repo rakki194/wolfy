@@ -22,8 +22,8 @@ While ComfyUI runs inside a slim NVIDIA container, the frontend build process re
 1. **Clone this repository and required components**:
 
    ```bash
-   git clone https://github.com/rakki194/wolfy.git
-   cd comfy-docker
+   git clone https://github.com/rakki194/wolfy.git comfy
+   cd comfy
    git clone https://github.com/comfyanonymous/ComfyUI.git
    git clone https://github.com/Comfy-Org/ComfyUI_frontend.git
    ```
