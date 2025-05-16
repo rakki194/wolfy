@@ -35,7 +35,7 @@ if [ -d "ComfyUI_frontend" ]; then
   
   # Install npm dependencies and build
   npm ci
-  npm run fetch-templates
+#  npm run fetch-templates
   npm run build
   
   # Get version from package.json
