@@ -34,23 +34,23 @@ services:
                 reservations:
                     devices:
                         - capabilities: [gpu]
-        ipc: host # Use host IPC namespace
+        #ipc: host # Use host IPC namespace
         ulimits:
             memlock: -1 # Disable memory lock limit
             stack: 67108864 # Set stack size limit
-        command: /bin/dash -c ". /app/venv/bin/activate && python main.py --listen 0.0.0.0 --preview-method taesd --use-pytorch-cross-attention --disable-xformers"
+        command: /bin/dash -c ". /app/venv/bin/activate && python main.py --listen 0.0.0.0 --preview-method taesd --use-pytorch-cross-attention --disable-xformers --disable-auto-launch --disable-api-nodes"
 
     create-venv:
         profiles:
             - init
         <<: *common-build
-        ipc: host
         ulimits:
           memlock: -1
           stack: 67108864
         volumes:
             - ./ComfyUI:/app/ComfyUI
             - ./venv:/app/venv
+            - ./requirements.txt:/app/requirements.txt
             - ${HOME}/.cache/pip:/app/pip-cache
             - ${HOME}/.cache/huggingface:/app/hf-home
             - ./ComfyUI_frontend/comfyui_frontend_package/dist:/app/frontend-wheel
@@ -60,4 +60,4 @@ services:
                 reservations:
                     devices:
                         - capabilities: [gpu]
-        command: /bin/dash -c "python3 -m venv venv --system-site-packages && . venv/bin/activate && pip install -r ComfyUI/requirements.txt && pip install -U /app/frontend-wheel/comfyui_frontend_package-*.whl"
+        command: /bin/dash -c "python3 -m venv venv --system-site-packages && . venv/bin/activate && pip install -U -r ComfyUI/requirements.txt && pip install -U /app/frontend-wheel/comfyui_frontend_package-*.whl"
