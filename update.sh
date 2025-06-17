@@ -42,6 +42,10 @@ if [ -d "ComfyUI_frontend" ]; then
   VERSION=$(node -p "require('./package.json').version")
   echo "Frontend version: $VERSION"
   
+  # Clean up old wheel packages
+  echo "Cleaning up old wheel packages..."
+  rm -rf comfyui_frontend_package/dist/*
+  
   # Setup and build the Python package
   echo "Creating Python wheel package..."
   mkdir -p comfyui_frontend_package/comfyui_frontend_package/static/
