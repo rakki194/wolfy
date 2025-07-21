@@ -32,36 +32,25 @@ fi
 if [ -d "ComfyUI_frontend" ]; then
   echo "Building ComfyUI_frontend..."
   cd ComfyUI_frontend
-  
+
   # Install npm dependencies and build
-  npm ci
-#  npm run fetch-templates
+  npm install
   npm run build
-  
-  # Get version from package.json
-  VERSION=$(node -p "require('./package.json').version")
-  echo "Frontend version: $VERSION"
-  
-  # Clean up old wheel packages
-  echo "Cleaning up old wheel packages..."
-  rm -rf comfyui_frontend_package/dist/*
-  
-  # Setup and build the Python package
-  echo "Creating Python wheel package..."
-  mkdir -p comfyui_frontend_package/comfyui_frontend_package/static/
-  cp -r dist/* comfyui_frontend_package/comfyui_frontend_package/static/
-  
-  # Set version environment variable for the build
-  export COMFYUI_FRONTEND_VERSION=$VERSION
-  
-  # Build the wheel
+
+  # Clean up old wheel and build artifacts
+  echo "Cleaning up old wheel and build artifacts..."
   cd comfyui_frontend_package
-  python -m pip install --user build
-  python -m build
-  cd ..
-  
-  echo "Frontend wheel package created at comfyui_frontend_package/dist/"
-  cd ..
+  rm -rf build dist comfyui_frontend_package.egg-info
+  # Remove old static files if present
+  rm -rf comfyui_frontend_package/static
+  # Copy the built frontend static files into the Python package
+  cp -r ../dist ./comfyui_frontend_package/static
+
+  # Build the wheel
+  echo "Building the frontend Python wheel..."
+  python3 setup.py bdist_wheel
+  cd ../..
+  echo "Frontend wheel package created at ComfyUI_frontend/comfyui_frontend_package/dist/"
 else
   echo "ComfyUI_frontend directory not found. Skipping frontend build."
 fi
