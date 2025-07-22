@@ -15,12 +15,16 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     libgl1 \
     ninja-build \
     git \
+    python3-packaging \
     && rm -rf /var/lib/apt/lists/*
+
+# Install PyTorch (required for Apex build)
+RUN pip install --break-system-packages torch torchvision torchaudio
 
 # Build and install NVIDIA Apex with CUDA and C++ extensions
 RUN git clone https://github.com/NVIDIA/apex.git /tmp/apex && \
     cd /tmp/apex && \
-    pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ./ && \
+    pip install --break-system-packages -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ./ && \
     cd / && rm -rf /tmp/apex
 
 # Set working directory

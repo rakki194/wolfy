@@ -32,11 +32,11 @@ fi
 if [ -d "ComfyUI_frontend" ]; then
   echo "Building ComfyUI_frontend..."
   cd ComfyUI_frontend
-
+  
   # Install npm dependencies and build
   npm install
   npm run build
-
+  
   # Clean up old wheel and build artifacts
   echo "Cleaning up old wheel and build artifacts..."
   cd comfyui_frontend_package
@@ -45,7 +45,7 @@ if [ -d "ComfyUI_frontend" ]; then
   rm -rf comfyui_frontend_package/static
   # Copy the built frontend static files into the Python package
   cp -r ../dist ./comfyui_frontend_package/static
-
+  
   # Build the wheel
   echo "Building the frontend Python wheel..."
   python3 setup.py bdist_wheel
