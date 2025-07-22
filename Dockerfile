@@ -13,7 +13,15 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     cmake \
     ffmpeg \
     libgl1 \
+    ninja-build \
+    git \
     && rm -rf /var/lib/apt/lists/*
+
+# Build and install NVIDIA Apex with CUDA and C++ extensions
+RUN git clone https://github.com/NVIDIA/apex.git /tmp/apex && \
+    cd /tmp/apex && \
+    pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ./ && \
+    cd / && rm -rf /tmp/apex
 
 # Set working directory
 WORKDIR /app

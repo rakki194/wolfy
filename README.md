@@ -243,3 +243,15 @@ You can modify these options in the `docker-compose.yml` file.
 - Ensure the UID and GID environment variables are set correctly
 - Check permissions of mounted directories
 
+# NVIDIA Apex (Mixed Precision Training)
+
+NVIDIA Apex is built and installed automatically in the Docker image with CUDA and C++ extensions for mixed precision and distributed training.
+
+If you need to rebuild Apex (for example, after upgrading PyTorch), you can use the provided script inside the container:
+
+```sh
+docker-compose run --rm comfyui bash scripts/build_apex.sh
+```
+
+This will clone (if needed) and rebuild Apex with the correct extensions.
+
