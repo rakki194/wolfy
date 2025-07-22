@@ -61,3 +61,25 @@ services:
                     devices:
                         - capabilities: [gpu]
         command: /bin/dash -c "python3 -m venv venv --system-site-packages && . venv/bin/activate && pip install -U -r ComfyUI/requirements.txt && pip install -U /app/frontend-wheel/comfyui_frontend_package-*.whl"
+
+    comfyui-dev:
+      <<: *common-build
+      ports:
+        - "127.0.0.1:8188:8188"
+      volumes:
+        - ./ComfyUI:/app/ComfyUI
+        - ./models:/app/ComfyUI/models
+        - ./venv:/app/venv
+        - ./ComfyUI_frontend/dist:/app/ComfyUI_frontend/dist
+        - ${HOME}/.cache/pip:/app/pip-cache
+        - ${HOME}/.cache/huggingface:/app/hf-home
+      working_dir: /app/ComfyUI
+      user: "${UID}:${GID}"
+      deploy:
+        resources:
+          reservations:
+            devices:
+              - capabilities: [gpu]
+      command: /bin/dash -c ". /app/venv/bin/activate && python main.py --listen 0.0.0.0 --preview-method taesd --use-pytorch-cross-attention --disable-xformers --disable-auto-launch --disable-api-nodes --front-end-root /app/ComfyUI_frontend/dist"
+      profiles:
+        - dev

@@ -243,7 +243,7 @@ You can modify these options in the `docker-compose.yml` file.
 - Ensure the UID and GID environment variables are set correctly
 - Check permissions of mounted directories
 
-# NVIDIA Apex (Mixed Precision Training)
+## NVIDIA Apex (Mixed Precision Training)
 
 NVIDIA Apex is built and installed automatically in the Docker image with CUDA and C++ extensions for mixed precision and distributed training.
 
@@ -254,4 +254,22 @@ docker-compose run --rm comfyui bash scripts/build_apex.sh
 ```
 
 This will clone (if needed) and rebuild Apex with the correct extensions.
+
+## ⚡️ Frontend Development Mode (Live Reload)
+
+For rapid frontend development, you can mount the built frontend directly:
+
+1. **Build the frontend once:**
+   ```bash
+   cd ComfyUI_frontend
+   npm install
+   npm run build
+   ```
+
+2. **Start the backend with the local frontend:**
+   ```bash
+   UID=$(id -u) GID=$(id -g) docker-compose --profile dev up comfyui-dev
+   ```
+
+   This will use your local `ComfyUI_frontend/dist` as the frontend, so you can rebuild it with `npm run build` and see changes instantly (no wheel build/install needed).
 

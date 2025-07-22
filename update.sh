@@ -84,3 +84,7 @@ else
 fi
 
 echo "Update process completed successfully!"
+
+echo "For frontend development, you can use the dev profile:"
+echo "  UID=\$(id -u) GID=\$(id -g) docker-compose --profile dev up comfyui-dev"
+echo "This will use your local ComfyUI_frontend/dist as the frontend."
