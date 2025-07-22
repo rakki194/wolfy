@@ -2,6 +2,30 @@
 
 This repository contains a Docker setup for ComfyUI, allowing for easy development and deployment.
 
+- [ComfyUI Docker Environment](#comfyui-docker-environment)
+  - [Prerequisites](#prerequisites)
+  - [Setup and Usage](#setup-and-usage)
+    - [Initial Setup](#initial-setup)
+    - [Update and Build Process](#update-and-build-process)
+    - [Starting ComfyUI](#starting-comfyui)
+    - [Installing Custom Node Dependencies](#installing-custom-node-dependencies)
+    - [Creating a Named Container for Easy Restart](#creating-a-named-container-for-easy-restart)
+    - [Update](#update)
+  - [Manual update](#manual-update)
+    - [Building the Docker Images](#building-the-docker-images)
+    - [Creating the Python Environment](#creating-the-python-environment)
+    - [Frontend Development](#frontend-development)
+    - [Production Deployment](#production-deployment)
+  - [File Structure](#file-structure)
+  - [Configuration Options](#configuration-options)
+  - [Troubleshooting](#troubleshooting)
+    - [GPU Issues](#gpu-issues)
+    - [Environment Issues](#environment-issues)
+    - [Frontend Issues](#frontend-issues)
+    - [Permission Issues](#permission-issues)
+  - [NVIDIA Apex (Mixed Precision Training)](#nvidia-apex-mixed-precision-training)
+  - [⚡️ Frontend Development Mode (Live Reload)](#️-frontend-development-mode-live-reload)
+
 ## Prerequisites
 
 For docker GPU support, this project requires:
@@ -29,6 +53,7 @@ While ComfyUI runs inside a slim NVIDIA container, the frontend build process re
    ```
 
 2. **Create directories for models and other data**:
+
    ```bash
    mkdir -p models
    ```
@@ -74,7 +99,6 @@ This command:
 
 ComfyUI will be accessible at [http://localhost:8188](http://localhost:8188).
 
-
 ### Installing Custom Node Dependencies
 
 Many custom nodes require additional Python packages. The logs show which dependencies are missing when you start ComfyUI. To install them:
@@ -85,6 +109,7 @@ UID=$(id -u) GID=$(id -g) docker-compose --profile init run --rm create-venv /bi
 ```
 
 Or start an interactive shell and manually install the dependencies:
+
 ```bash
 UID=$(id -u) GID=$(id -g) docker-compose --profile init run --rm create-venv /bin/bash
 . /app/venv/bin/activate
@@ -116,6 +141,7 @@ docker start --attach comfy-comfyui-1
 For development:
 
 1. **Update and build everything**:
+
    ```bash
    ./update.sh
    ```
@@ -155,16 +181,20 @@ When making changes to the frontend:
 
 1. **Make changes in the ComfyUI_frontend directory**
 2. **Build the frontend and create the wheel package**:
+
    ```bash
    cd ComfyUI_frontend
    npm ci
    npm run build
    # Then create the wheel package as done in update.sh
    ```
+
 3. **Reinstall the frontend package in the venv**:
+
    ```bash
    docker exec -it comfy-comfyui-1 /bin/bash -c "source /app/venv/bin/activate && pip install /app/frontend-wheel/comfyui_frontend_package-*.whl"
    ```
+
    Or recreate the venv completely using the `create-venv` service.
 
 ### Production Deployment
@@ -196,6 +226,7 @@ For production deployment, you can:
    ```
 
 5. **Set up automatic restarts**:
+
    ```bash
    docker update --restart=unless-stopped comfy-comfyui-1
    ```
@@ -227,9 +258,11 @@ You can modify these options in the `docker-compose.yml` file.
 
 - Ensure NVIDIA drivers and NVIDIA Container Toolkit are installed
 - Check Docker logs with `docker logs comfy-comfyui-1`
+
 ### Environment Issues
 
 - If changes to requirements are made, rebuild the environment with:
+
   ```bash
   docker-compose --profile init up create-venv
   ```
@@ -260,6 +293,7 @@ This will clone (if needed) and rebuild Apex with the correct extensions.
 For rapid frontend development, you can mount the built frontend directly:
 
 1. **Build the frontend once:**
+
    ```bash
    cd ComfyUI_frontend
    npm install
@@ -267,9 +301,9 @@ For rapid frontend development, you can mount the built frontend directly:
    ```
 
 2. **Start the backend with the local frontend:**
+
    ```bash
    UID=$(id -u) GID=$(id -g) docker-compose --profile dev up comfyui-dev
    ```
 
    This will use your local `ComfyUI_frontend/dist` as the frontend, so you can rebuild it with `npm run build` and see changes instantly (no wheel build/install needed).
-
